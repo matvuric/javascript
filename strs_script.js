@@ -1,3 +1,33 @@
+// Первый символ заглавный
+
+function ucFirst(str) {
+  if (str) return str[0].toUpperCase() + str.slice(1);
+  return str;
+}
+
+// Проверка спама
+
+function checkSpam(str) { 
+  return str.toLowerCase().includes('viagra') ||
+    str.toLowerCase().includes('xxx');
+}
+
+// Усечение строки
+
+function truncate(str, maxlength) {
+  if (str.length > maxlength) {
+    return str.slice(0, maxlength - 1) + "…";
+  }
+
+  return str
+}
+
+// Выделить число
+
+function extractCurrencyValue(str) {
+  return +str.slice(1);
+}
+
 describe("ucFirst", function() {
   it('Переводит первый символ в верхний регистр', function() {
     assert.strictEqual(ucFirst("john"), "John");

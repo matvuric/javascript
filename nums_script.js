@@ -1,3 +1,36 @@
+// Сумма пользовательских чисел
+            
+function sum() {
+  a = +prompt('a:', 0);
+  b = +prompt('b:', 0);
+  return a + b;
+}
+
+// Ввод числового значения
+
+function readNumber() { 
+  let x;
+
+  do {
+    x = prompt('Введите число:', 0);
+  } while (!isFinite(x));
+  
+  if (x === null || x === '') return null;
+
+  return +x;
+}
+
+// Случайное число от min до max
+
+function random(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+// Случайное целое число от min до max
+function randomInteger(min, max) {
+  return Math.random() * (max - min + 1) + min - 0.5;
+}
+
 beforeEach(function() {
   sinon.stub(window, "prompt");
 });
