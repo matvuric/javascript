@@ -1,8 +1,9 @@
-describe("extractCurrencyValue", function() {
-
-  it("возвращает для строки $120 число 120", function() {
-    assert.strictEqual(extractCurrencyValue('$120'), 120);
+describe("ucFirst", function() {
+    it('Переводит первый символ в верхний регистр', function() {
+      assert.strictEqual(ucFirst("john"), "John");
+    });
+  
+    it("Не умирает на пустых строках", function() {
+      assert.strictEqual(ucFirst(""), "");
+    });
   });
-
-
-});
