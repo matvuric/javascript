@@ -75,27 +75,85 @@ function copySorted(arr) {
 // Расширяемый калькулятор
 
 function Calculator(str) {
+  this.methods = {
+    '+': (a, b) => a + b,
+    '-': (a, b) => a - b,
+  }
+
   this.calculate = function(str) {
     let arr = str.split(' ');
-    this.a = arr[0];
-    this.b = arr[2];
+    let a = +arr[0];
+    let b = +arr[2];
+    let op = arr[1];
 
-    this.sum() = function() {
-      return this.a + this.b;
+    if (!this.methods[op] || isNaN(a) || isNaN(b)) {
+      return NaN;
     }
 
-    this.subtract() = function() {
-      
-    }
-
-    return (arr[1] == '+') ? (+arr[0] + +arr[2]) : (arr[1] == '-') ? (+arr[0] - +arr[2]) : 'Не знаю такой команды';
+    return this.methods[op](a, b);
   }
 
   this.addMethod = function(name, func) {
+    this.methods[name] = func;
+  }
+}
 
+// Трансформировать в массив имён
+
+function transformIntoNames(arr) {
+  return arr.map(item => item.name);
+}
+
+// Трансформировать в объекты
+
+function transformIntoObjects(arr) {
+  return arr.map(user => ({fullName: `${user.name} ${user.surname}`, id: user.id}));
+}
+
+// Отсортировать пользователей по возрасту
+
+function sortByAge(users) {
+  return users.sort((a, b) => a.age - b.age);
+}
+
+// Перемешка массива ( Тасование Фишера — Йетса )
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0 ; i--) {
+    let x = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[x]] = [arr[x], arr[i]]; 
+  }
+}
+
+// Получить средний возраст
+
+function getAverageAge(users) {
+  return users.reduce((sum, current) => sum + current.age, 0) / users.length;
+}
+
+// Оставить уникальные элементы массива
+
+function unique(arr) {
+  let unique = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    if (!unique.includes(arr[i])) {
+      unique.push(arr[i]);
+    }
   }
 
+  return unique;
 }
+
+// Создайте объект с ключами из массива
+
+function groupById(arr) {
+  return arr.reduce((obj, value) => {
+    obj[value.id] = value;
+    return obj;
+  }, {})
+}
+
 // Тесты
 
 describe("Массивы", function()  {
@@ -269,7 +327,7 @@ describe("Массивы", function()  {
     });
   });
 
-  describe("Calculator", function() {
+  describe("Расширяемый калькулятор - Calculator", function() {
     let calculator;
   
     before(function() {
@@ -294,5 +352,100 @@ describe("Массивы", function()  {
       assert.equal(calculator.calculate("2 ** 3"), 8);
     });
   });
-});
 
+  describe("Трансформировать в массив имён - transformIntoNames", function() {
+
+    it("returns the array of names", function() {
+  
+      let vasya = { name: "Вася", age: 25 };
+      let petya = { name: "Петя", age: 30 };
+      let masha = { name: "Маша", age: 28 };
+
+      let users = [ vasya, petya, masha ];
+  
+      assert.deepEqual(transformIntoNames(users), ['Вася', 'Петя', 'Маша']);
+    });
+  });
+
+  describe("Трансформировать в объекты - transformIntoObjects", function() {
+
+    it("returns the array of objects", function() {
+  
+      let vasya = { name: "Вася", surname: "Пупкин", id: 1 };
+      let petya = { name: "Петя", surname: "Иванов", id: 2 };
+      let masha = { name: "Маша", surname: "Петрова", id: 3 };
+
+      let users = [ vasya, petya, masha ];
+  
+      assert.deepEqual(transformIntoObjects(users), [{ fullName: "Вася Пупкин", id: 1 },
+                                                     { fullName: "Петя Иванов", id: 2 },
+                                                     { fullName: "Маша Петрова", id: 3 }]);
+    });
+  });
+
+  describe("Отсортировать пользователей по возрасту - sortByAge", function() {
+
+    it("returns the sorted by age users", function() {
+  
+      let vasya = { name: "Вася", age: 25 };
+      let petya = { name: "Петя", age: 30 };
+      let masha = { name: "Маша", age: 28 };
+
+      let arr = [ vasya, petya, masha ];
+  
+      assert.deepEqual(sortByAge(arr), [vasya, masha, petya]);
+    });
+  });
+
+  describe("Получить средний возраст - getAverageAge", function() {
+
+    it("returns the average age of users", function() {
+  
+      let vasya = { name: "Вася", age: 25 };
+      let petya = { name: "Петя", age: 30 };
+      let masha = { name: "Маша", age: 29 };
+
+      let arr = [ vasya, petya, masha ];
+  
+      assert.deepEqual(getAverageAge(arr), 28);
+    });
+  });
+
+  describe("Оставить уникальные элементы массива - unique", function() {
+    it("removes non-unique elements", function() {
+      let strings = ["Hare", "Krishna", "Hare", "Krishna",
+        "Krishna", "Krishna", "Hare", "Hare", ":-O"
+      ];
+  
+      assert.deepEqual(unique(strings), ["Hare", "Krishna", ":-O"]);
+    });
+  
+    it("does not change the source array", function() {
+      let strings = ["Krishna", "Krishna", "Hare", "Hare"];
+      unique(strings);
+      assert.deepEqual(strings, ["Krishna", "Krishna", "Hare", "Hare"]);
+    });
+  });
+
+  describe("Создайте объект с ключами из массива - groupById", function() {
+
+    it("creates an object grouped by id", function() {
+      let users = [
+        {id: 'john', name: "John Smith", age: 20},
+        {id: 'ann', name: "Ann Smith", age: 24},
+        {id: 'pete', name: "Pete Peterson", age: 31},
+      ];
+  
+      assert.deepEqual(groupById(users), {
+        john: {id: 'john', name: "John Smith", age: 20},
+        ann: {id: 'ann', name: "Ann Smith", age: 24},
+        pete: {id: 'pete', name: "Pete Peterson", age: 31},
+      });
+    });
+  
+    it("works with an empty array", function() {
+      users = [];
+      assert.deepEqual(groupById(users), {});
+    });
+  });
+});
